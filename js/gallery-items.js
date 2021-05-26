@@ -68,13 +68,14 @@
 
 // console.log(images)
 
+
 const imagesList = document.querySelector(".js-gallery");
 const modal = document.querySelector(".js-lightbox");
 const close = document.querySelector('[data-action="close-lightbox"]');
 const modalImage = document.querySelector(".lightbox__image")
 
 
-// Создание галереи изображений
+// Создание галереи изображений------------------------------------
 
 const imageMarkup = createImageCardsMarkup(images)
 
@@ -109,7 +110,7 @@ function createImageCardsMarkup(images) {
 }
 //---------------------------------------------------------
 
-// Делегирование----------------
+// Делегирование и открытие модального окна----------------
 
 imagesList.addEventListener('click', onImageListClick)
 
@@ -119,8 +120,7 @@ function onImageListClick(event) {
 
     if (!isImageSwatchEl) {
         return
-    }
-    
+    }   
     const imageUrl = event.target.dataset.source;
     modal.classList.add("is-open");
 
@@ -138,3 +138,58 @@ function onCloseClick(event) {
     modalImage.src = ''
 }
 
+//-----------------------------------------------------------
+
+// Закрытие модалки  клавишей esc ---------------------
+
+document.addEventListener('keydown', onEscClick);
+function onEscClick(event) {
+    if (event.keyCode !== 27) {
+        return
+    }
+    modal.classList.remove("is-open");
+    modalImage.src = ''
+}
+//-----------------------------------------------------------
+
+// Закрытие модалки кликом по полю модалки ---------------------
+
+modal.addEventListener('click', onModalWindowClick);
+
+function onModalWindowClick(event) {
+    const isModalImageEl = event.target.classList.contains("lightbox__image");
+     if (isModalImageEl) {
+        return
+    }
+    modal.classList.remove("is-open");
+    modalImage.src = ''
+}
+//---------------------------------------------------------------
+// Слайдшоу стрелками  ArrowLeft || ArrowRight---------------------
+
+const arrayImages = [];
+images.forEach(({original})=> {
+    arrayImages.push(original);
+
+ })
+// console.log(arrayImages);
+
+document.addEventListener('keydown', onArrowClick);
+function onArrowClick(event) {
+    let newIndex;
+    const currentId = arrayImages.indexOf(modalImage.src);
+    if (event.key === 'ArrowLeft') {
+        if (currentId > -1) {
+            newIndex = currentId - 1;
+        }
+        if (newIndex === -1) {
+            newIndex = arrayImages.length - 1;
+        }
+    } else if (event.key === 'ArrowRight') {
+        newIndex = currentId + 1;
+        if (newIndex === arrayImages.length) {
+            newIndex = 0;
+        }
+    }
+    modalImage.src = arrayImages[newIndex];
+};
