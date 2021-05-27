@@ -190,6 +190,6 @@ function onArrowClick(event) {
         if (newIndex === arrayImages.length) {
             newIndex = 0;
         }
-    }
+    } else return;
     modalImage.src = arrayImages[newIndex];
 };
